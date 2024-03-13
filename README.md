@@ -16,6 +16,30 @@ composer require baspa/buienradar-php-api
 
 ## Usage
 
+### Get the actual forecast report
+
+```php
+use Baspa\Buienradar\Buienradar;
+
+$forecast = Buienradar::forecast()->report();
+```
+
+### Get the short term forecast
+
+```php
+use Baspa\Buienradar\Buienradar;
+
+$forecast = Buienradar::forecast()->shortTerm();
+```
+
+### Get the long term forecast
+
+```php
+use Baspa\Buienradar\Buienradar;
+
+$forecast = Buienradar::forecast()->longTerm();
+```
+
 ### Get the actual forecast for a specific measurement station
 
 Choose either one of the following measuring stations:

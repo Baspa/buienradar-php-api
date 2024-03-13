@@ -11,6 +11,8 @@ class Buienradar
 
     public static ?Client $client = null;
 
+    public static ?array $forecast = null;
+
     private static function init()
     {
         if (self::$client !== null) {
@@ -19,13 +21,15 @@ class Buienradar
         self::$client = new Client();
     }
 
-    public static function getWeatherForecast(): array
+    public static function forecast(): self
     {
         self::init();
 
         $response = self::$client->get(self::$url);
 
-        return json_decode($response->getBody()->getContents(), true)['forecast'];
+        self::$forecast = json_decode($response->getBody()->getContents(), true)['forecast'];
+
+        return new self;
     }
 
     public static function actualForecastForStation(MeasuringStation $measuringStation): array
@@ -43,4 +47,25 @@ class Buienradar
 
         return [];
     }
+
+    public static function report(): array
+    {
+        self::init();
+
+        return self::$forecast['weatherreport'];
+    }
+
+    public static function shortTerm(): array
+    {
+        self::init();
+
+        return self::$forecast['shortterm'];
+    }
+
+    public static function longTerm(): array
+    {
+        self::init();
+
+        return self::$forecast['longterm'];
+    }   
 }

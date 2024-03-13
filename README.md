@@ -1,4 +1,4 @@
-# PHP package to provide fluent syntax for the Buienradar API
+# Buienradar PHP API
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
 [![Tests](https://img.shields.io/github/actions/workflow/status/baspa/buienradar-php-api/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/baspa/buienradar-php-api/actions/workflows/run-tests.yml)

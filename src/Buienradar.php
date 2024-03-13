@@ -67,5 +67,5 @@ class Buienradar
         self::init();
 
         return self::$forecast['longterm'];
-    }   
+    }
 }

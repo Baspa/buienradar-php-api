@@ -2,9 +2,6 @@
 
 namespace Baspa\Buienradar;
 
-use Baspa\Buienradar\Enum\MeasuringStation;
-use GuzzleHttp\Client;
-
 namespace Baspa\Buienradar;
 
 use Baspa\Buienradar\Enum\MeasuringStation;
@@ -28,6 +25,7 @@ class Buienradar
     {
         try {
             $response = $this->client->get(self::URL);
+
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             // Handle the exception (log, throw a custom exception, etc.)

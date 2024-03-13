@@ -1,10 +1,12 @@
+Certainly! Here's an updated README based on the non-static class:
+
 # Buienradar PHP API
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
 [![Tests](https://img.shields.io/github/actions/workflow/status/baspa/buienradar-php-api/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/baspa/buienradar-php-api/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
 
-This framework agnostic PHP package provides a fluent syntax to interact with the Buienradar API.
+This framework-agnostic PHP package provides a fluent syntax to interact with the Buienradar API.
 
 ## Installation
 
@@ -16,28 +18,32 @@ composer require baspa/buienradar-php-api
 
 ## Usage
 
+### Initialization
+
+Create an instance of the `Buienradar` class:
+
+```php
+use Baspa\Buienradar\Buienradar;
+
+$buienradar = new Buienradar();
+```
+
 ### Get the actual forecast report
 
 ```php
-use Baspa\Buienradar\Buienradar;
-
-$forecast = Buienradar::forecast()->report();
+$forecast = $buienradar->forecast()->report();
 ```
 
-### Get the short term forecast
+### Get the short-term forecast
 
 ```php
-use Baspa\Buienradar\Buienradar;
-
-$forecast = Buienradar::forecast()->shortTerm();
+$forecast = $buienradar->forecast()->shortTerm();
 ```
 
-### Get the long term forecast
+### Get the long-term forecast
 
 ```php
-use Baspa\Buienradar\Buienradar;
-
-$forecast = Buienradar::forecast()->longTerm();
+$forecast = $buienradar->forecast()->longTerm();
 ```
 
 ### Get the actual forecast for a specific measurement station
@@ -88,9 +94,9 @@ Choose either one of the following measuring stations:
 For example, to get the forecast for the Volkel station, use:
 
 ```php
-use Baspa\Buienradar\Buienradar;
+use Baspa\Buienradar\Enum\MeasuringStation;
 
-$forecast = Buienradar::actualForecastForStation(MeasuringStation::VOLKEL)
+$forecast = $buienradar->actualForecastForStation(MeasuringStation::VOLKEL);
 ```
 
 ## Testing

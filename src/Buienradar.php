@@ -5,39 +5,48 @@ namespace Baspa\Buienradar;
 use Baspa\Buienradar\Enum\MeasuringStation;
 use GuzzleHttp\Client;
 
+namespace Baspa\Buienradar;
+
+use Baspa\Buienradar\Enum\MeasuringStation;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
 class Buienradar
 {
-    private static string $url = 'https://data.buienradar.nl/2.0/feed/json';
+    private const URL = 'https://data.buienradar.nl/2.0/feed/json';
 
-    public static ?Client $client = null;
+    private Client $client;
 
-    public static ?array $forecast = null;
+    private array $forecast;
 
-    private static function init()
+    public function __construct()
     {
-        if (self::$client !== null) {
-            return;
+        $this->client = new Client();
+    }
+
+    private function fetchData(): array
+    {
+        try {
+            $response = $this->client->get(self::URL);
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (RequestException $e) {
+            // Handle the exception (log, throw a custom exception, etc.)
+            return [];
         }
-        self::$client = new Client();
     }
 
-    public static function forecast(): self
+    public function forecast(): self
     {
-        self::init();
+        $data = $this->fetchData();
+        $this->forecast = $data['forecast'] ?? [];
 
-        $response = self::$client->get(self::$url);
-
-        self::$forecast = json_decode($response->getBody()->getContents(), true)['forecast'];
-
-        return new self;
+        return $this;
     }
 
-    public static function actualForecastForStation(MeasuringStation $measuringStation): array
+    public function actualForecastForStation(MeasuringStation $measuringStation): array
     {
-        self::init();
-
-        $response = self::$client->get(self::$url);
-        $measurements = json_decode($response->getBody()->getContents(), true)['actual']['stationmeasurements'];
+        $data = $this->fetchData();
+        $measurements = $data['actual']['stationmeasurements'] ?? [];
 
         foreach ($measurements as $measurement) {
             if ($measurement['stationname'] === $measuringStation->value) {
@@ -48,24 +57,18 @@ class Buienradar
         return [];
     }
 
-    public static function report(): array
+    public function report(): array
     {
-        self::init();
-
-        return self::$forecast['weatherreport'];
+        return $this->forecast['weatherreport'] ?? [];
     }
 
-    public static function shortTerm(): array
+    public function shortTerm(): array
     {
-        self::init();
-
-        return self::$forecast['shortterm'];
+        return $this->forecast['shortterm'] ?? [];
     }
 
-    public static function longTerm(): array
+    public function longTerm(): array
     {
-        self::init();
-
-        return self::$forecast['longterm'];
+        return $this->forecast['longterm'] ?? [];
     }
 }

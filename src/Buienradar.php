@@ -43,6 +43,11 @@ class Buienradar
         return $this;
     }
 
+    public function get(): array
+    {
+        return $this->forecast;
+    }
+
     public function actualForecastForStation(MeasuringStation $measuringStation): array
     {
         $data = $this->fetchData();

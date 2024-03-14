@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Baspa\Buienradar;
 
@@ -22,9 +22,8 @@ class Forecast
         public string $weatherdescription,
         public string $iconurl,
         public string $fullIconUrl
-    )
-    {
-        
+    ) {
+
     }
 
     public static function fromArray(array $data): self
@@ -69,7 +68,7 @@ class Forecast
             'mmRainMax' => $this->mmRainMax,
             'weatherdescription' => $this->weatherdescription,
             'iconurl' => $this->iconurl,
-            'fullIconUrl' => $this->fullIconUrl
+            'fullIconUrl' => $this->fullIconUrl,
         ];
     }
 

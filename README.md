@@ -46,6 +46,18 @@ $forecast = $buienradar->forecast()->shortTerm();
 $forecast = $buienradar->forecast()->longTerm();
 ```
 
+### Get the forecast for the upcoming 5 days
+
+```php
+$forecast = $buienradar->forecast()->forFiveDays();
+```
+
+### Get the forecast for one specific day
+
+```php
+$forecast = $buienradar->forecast()->forDay(1);
+```
+
 ### Get the actual forecast for a specific measurement station
 
 Choose either one of the following measuring stations:

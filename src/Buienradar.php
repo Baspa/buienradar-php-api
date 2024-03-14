@@ -76,4 +76,14 @@ class Buienradar
     {
         return $this->forecast['longterm'] ?? [];
     }
+
+    public function forFiveDays(): array
+    {
+        return $this->forecast['fivedayforecast'] ?? [];
+    }
+
+    public function forDay(int $day): array
+    {
+        return $this->forecast['fivedayforecast'][$day] ?? [];
+    }
 }

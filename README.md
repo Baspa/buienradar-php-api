@@ -1,5 +1,3 @@
-Certainly! Here's an updated README based on the non-static class:
-
 # Buienradar PHP API
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)

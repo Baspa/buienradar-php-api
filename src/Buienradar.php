@@ -77,11 +77,11 @@ class Buienradar
 
     public function forFiveDays(): array
     {
-        return $this->forecast['fivedayforecast'] ?? [];
+        return array_map(fn ($forecast) => Forecast::fromArray($forecast), $this->forecast['fivedayforecast'] ?? []);
     }
 
-    public function forDay(int $day): array
+    public function forDay(int $day): Forecast
     {
-        return $this->forecast['fivedayforecast'][$day] ?? [];
+        return Forecast::fromArray($this->forecast['fivedayforecast'][$day] ?? []);
     }
 }

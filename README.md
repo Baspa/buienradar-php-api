@@ -1,13 +1,11 @@
 # Buienradar PHP API
 
-[![Total Downloads](https://img.shields.io/packagist/dt/baspa.buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa.buienradar-php-api)
-[![Tests](https://github.com/baspa.buienradar-php-api/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/baspa.buienradar-php-api/actions/workflows/run-tests.yml)
-[![PHPStan](https://github.com/baspa.buienradar-php-api/actions/workflows/phpstan.yml/badge.svg?branch=main)](https://github.com/baspa.buienradar-php-api/actions/workflows/phpstan.yml)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/baspa.buienradar-php-api)
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/baspa.buienradar-php-api)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa.buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa.buienradar-php-api)
-
 [![Total Downloads](https://img.shields.io/packagist/dt/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
+[![Tests](https://github.com/baspa/buienradar-php-api/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/baspa/buienradar-php-api/actions/workflows/run-tests.yml)
+[![PHPStan](https://github.com/baspa/buienradar-php-api/actions/workflows/phpstan.yml/badge.svg?branch=main)](https://github.com/baspa/buienradar-php-api/actions/workflows/phpstan.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/baspa/buienradar-php-api)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/baspa/buienradar-php-api)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
 
 This framework-agnostic PHP package provides a fluent syntax to interact with the Buienradar API.
 

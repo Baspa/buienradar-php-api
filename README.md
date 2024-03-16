@@ -1,7 +1,12 @@
 # Buienradar PHP API
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
-[![Tests](https://img.shields.io/github/actions/workflow/status/baspa/buienradar-php-api/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/baspa/buienradar-php-api/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/baspa.buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa.buienradar-php-api)
+[![Tests](https://github.com/baspa.buienradar-php-api/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/baspa.buienradar-php-api/actions/workflows/run-tests.yml)
+[![PHPStan](https://github.com/baspa.buienradar-php-api/actions/workflows/phpstan.yml/badge.svg?branch=main)](https://github.com/baspa.buienradar-php-api/actions/workflows/phpstan.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/baspa.buienradar-php-api)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/baspa.buienradar-php-api)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/baspa.buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa.buienradar-php-api)
+
 [![Total Downloads](https://img.shields.io/packagist/dt/baspa/buienradar-php-api.svg?style=flat-square)](https://packagist.org/packages/baspa/buienradar-php-api)
 
 This framework-agnostic PHP package provides a fluent syntax to interact with the Buienradar API.
@@ -60,46 +65,46 @@ $forecast = $buienradar->forecast()->forDay(1);
 
 Choose either one of the following measuring stations:
 
-- Meetstation Arcen
-- Meetstation Arnhem
-- Meetstation Berkhout
-- Meetstation De Bilt
-- Meetstation Den Helder
-- Meetstation Eindhoven
-- Meetstation Ell
-- Meetstation Gilze Rijen
-- Meetstation Goes
-- Meetstation Groenlo-Hupsel
-- Meetstation Groningen
-- Meetstation Heino
-- Meetstation Herwijnen
-- Meetstation Hoek van Holland
-- Meetstation Hoogeveen
-- Meetstation Hoorn Terschelling
-- Meetstation Houtribdijk
-- Meetstation IJmuiden
-- Meetstation Lauwersoog
-- Meetstation Leeuwarden
-- Meetstation Lelystad
-- Meetstation Lopik-Cabauw
-- Meetstation Maastricht
-- Meetstation Marknesse
-- Meetstation Nieuw Beerta
-- Meetstation Rotterdam
-- Meetstation Rotterdam Geulhaven
-- Meetstation Schiphol
-- Meetstation Stavoren
-- Meetstation Texelhors
-- Meetstation Twente
-- Meetstation Vlieland
-- Meetstation Vlissingen
-- Meetstation Volkel
-- Meetstation Voorschoten
-- Meetstation Westdorpe
-- Meetstation Wijdenes
-- Meetstation Wijk aan Zee
-- Meetstation Woensdrecht
-- Meetstation Zeeplatform F-3
+-   Meetstation Arcen
+-   Meetstation Arnhem
+-   Meetstation Berkhout
+-   Meetstation De Bilt
+-   Meetstation Den Helder
+-   Meetstation Eindhoven
+-   Meetstation Ell
+-   Meetstation Gilze Rijen
+-   Meetstation Goes
+-   Meetstation Groenlo-Hupsel
+-   Meetstation Groningen
+-   Meetstation Heino
+-   Meetstation Herwijnen
+-   Meetstation Hoek van Holland
+-   Meetstation Hoogeveen
+-   Meetstation Hoorn Terschelling
+-   Meetstation Houtribdijk
+-   Meetstation IJmuiden
+-   Meetstation Lauwersoog
+-   Meetstation Leeuwarden
+-   Meetstation Lelystad
+-   Meetstation Lopik-Cabauw
+-   Meetstation Maastricht
+-   Meetstation Marknesse
+-   Meetstation Nieuw Beerta
+-   Meetstation Rotterdam
+-   Meetstation Rotterdam Geulhaven
+-   Meetstation Schiphol
+-   Meetstation Stavoren
+-   Meetstation Texelhors
+-   Meetstation Twente
+-   Meetstation Vlieland
+-   Meetstation Vlissingen
+-   Meetstation Volkel
+-   Meetstation Voorschoten
+-   Meetstation Westdorpe
+-   Meetstation Wijdenes
+-   Meetstation Wijk aan Zee
+-   Meetstation Woensdrecht
+-   Meetstation Zeeplatform F-3
 
 For example, to get the forecast for the Volkel station, use:
 
@@ -129,8 +134,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Baspa](https://github.com/Baspa)
-- [All Contributors](../../contributors)
+-   [Baspa](https://github.com/Baspa)
+-   [All Contributors](../../contributors)
 
 ## License
 

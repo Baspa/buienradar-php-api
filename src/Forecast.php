@@ -23,7 +23,6 @@ class Forecast
         public string $iconurl,
         public string $fullIconUrl
     ) {
-
     }
 
     /** @param array<string, mixed> $data */

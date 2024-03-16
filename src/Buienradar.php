@@ -49,19 +49,19 @@ class Buienradar
         return $this->forecast;
     }
 
-    /** @return array<string, mixed> */
-    public function actualForecastForStation(MeasuringStation $measuringStation): array
+    public function actualForecastForStation(MeasuringStation $measuringStation): ?ActualForecast
     {
         $data = $this->fetchData();
         $measurements = $data['actual']['stationmeasurements'] ?? [];
 
         foreach ($measurements as $measurement) {
             if ($measurement['stationname'] === $measuringStation->value) {
+                return ActualForecast::fromArray($measurement);
                 return $measurement;
             }
         }
 
-        return [];
+        return null;
     }
 
     /** @return array<string, mixed> */

@@ -57,8 +57,6 @@ class Buienradar
         foreach ($measurements as $measurement) {
             if ($measurement['stationname'] === $measuringStation->value) {
                 return ActualForecast::fromArray($measurement);
-
-                return $measurement;
             }
         }
 

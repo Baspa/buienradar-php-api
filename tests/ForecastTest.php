@@ -30,3 +30,9 @@ it('can get the weather report', function () {
 
     expect($forecast)->toHaveKey('summary');
 });
+
+it('can get the forecast for a specific day', function () {
+    $forecast = $this->buienradar->forecast()->forDay(0);
+
+    expect($forecast)->toHaveKey('day');
+});

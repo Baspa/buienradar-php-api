@@ -31,8 +31,7 @@ class ActualForecast
         public float $rainFallLast24Hour,
         public float $rainFallLastHour,
         public float $winddirectiondegrees
-    ) {
-    }
+    ) {}
 
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
@@ -102,7 +101,7 @@ class ActualForecast
 
     public function toJson(): string
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray()) ?: '';
     }
 
     public function __toString(): string

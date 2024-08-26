@@ -22,8 +22,7 @@ class Forecast
         public string $weatherdescription,
         public string $iconurl,
         public string $fullIconUrl
-    ) {
-    }
+    ) {}
 
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
@@ -75,7 +74,7 @@ class Forecast
 
     public function toJson(): string
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray()) ?: '';
     }
 
     public function __toString(): string

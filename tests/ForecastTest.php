@@ -4,7 +4,7 @@ use Baspa\Buienradar\Buienradar;
 use Baspa\Buienradar\Enum\MeasuringStation;
 
 beforeEach(function () {
-    $this->buienradar = new Buienradar();
+    $this->buienradar = new Buienradar;
 });
 
 it('can get the forecast for a specific measurement station', function () {

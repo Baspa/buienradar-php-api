@@ -19,7 +19,7 @@ class Buienradar
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client;
     }
 
     /** @return array<string, mixed> */

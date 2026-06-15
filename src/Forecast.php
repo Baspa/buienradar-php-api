@@ -5,7 +5,6 @@ namespace Baspa\Buienradar;
 class Forecast
 {
     public function __construct(
-        public string $id,
         public string $day,
         public string $mintemperature,
         public string $maxtemperature,
@@ -28,23 +27,22 @@ class Forecast
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['$id'],
-            $data['day'],
-            $data['mintemperature'],
-            $data['maxtemperature'],
-            $data['mintemperatureMax'],
-            $data['mintemperatureMin'],
-            $data['maxtemperatureMax'],
-            $data['maxtemperatureMin'],
-            $data['rainChance'],
-            $data['sunChance'],
-            $data['windDirection'],
-            $data['wind'],
-            $data['mmRainMin'],
-            $data['mmRainMax'],
-            $data['weatherdescription'],
-            $data['iconurl'],
-            $data['fullIconUrl']
+            (string) ($data['Day'] ?? ''),
+            (string) ($data['MinTemperature'] ?? ''),
+            (string) ($data['MaxTemperature'] ?? ''),
+            (int) ($data['MinTemperatureMax'] ?? 0),
+            (int) ($data['MinTemperatureMin'] ?? 0),
+            (int) ($data['MaxTemperatureMax'] ?? 0),
+            (int) ($data['MaxTemperatureMin'] ?? 0),
+            (int) ($data['RainChance'] ?? 0),
+            (int) ($data['SunChance'] ?? 0),
+            (string) ($data['WindDirection'] ?? ''),
+            (int) ($data['WindBeaufort'] ?? 0),
+            (float) ($data['RainMinMm'] ?? 0),
+            (float) ($data['RainMaxMm'] ?? 0),
+            (string) ($data['WeatherDescription'] ?? ''),
+            (string) ($data['IconUrl'] ?? ''),
+            (string) ($data['FullIconUrl'] ?? '')
         );
     }
 
@@ -52,7 +50,6 @@ class Forecast
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
             'day' => $this->day,
             'mintemperature' => $this->mintemperature,
             'maxtemperature' => $this->maxtemperature,

@@ -5,64 +5,64 @@ namespace Baspa\Buienradar;
 class ActualForecast
 {
     public function __construct(
-        public string $id,
         public int $stationid,
         public string $stationname,
         public float $lat,
         public float $lon,
-        public string $regio,
+        public ?string $regio,
         public string $timestamp,
         public string $weatherdescription,
         public string $iconurl,
         public string $fullIconUrl,
         public string $graphUrl,
-        public string $winddirection,
-        public float $airpressure,
-        public float $temperature,
-        public float $groundtemperature,
-        public float $feeltemperature,
-        public float $visibility,
-        public float $windgusts,
-        public float $windspeed,
-        public int $windspeedBft,
-        public float $humidity,
-        public float $precipitation,
-        public float $sunpower,
-        public float $rainFallLast24Hour,
-        public float $rainFallLastHour,
-        public float $winddirectiondegrees
+        public ?string $winddirection,
+        public ?float $airpressure,
+        public ?float $temperature,
+        public ?float $groundtemperature,
+        public ?float $feeltemperature,
+        public ?float $visibility,
+        public ?float $windgusts,
+        public ?float $windspeed,
+        public ?int $windspeedBft,
+        public ?float $humidity,
+        public ?float $precipitation,
+        public ?float $sunpower,
+        public ?float $rainFallLast24Hour,
+        public ?float $rainFallLastHour,
+        public ?float $winddirectiondegrees
     ) {}
 
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
+        $float = fn (string $key): ?float => isset($data[$key]) ? (float) $data[$key] : null;
+
         return new self(
-            $data['$id'],
-            $data['stationid'],
-            $data['stationname'],
-            $data['lat'],
-            $data['lon'],
-            $data['regio'],
-            $data['timestamp'],
-            $data['weatherdescription'],
-            $data['iconurl'],
-            $data['fullIconUrl'],
-            $data['graphUrl'],
-            $data['winddirection'],
-            $data['airpressure'],
-            $data['temperature'],
-            $data['groundtemperature'],
-            $data['feeltemperature'],
-            $data['visibility'],
-            $data['windgusts'],
-            $data['windspeed'],
-            $data['windspeedBft'],
-            $data['humidity'],
-            $data['precipitation'],
-            $data['sunpower'],
-            $data['rainFallLast24Hour'],
-            $data['rainFallLastHour'],
-            $data['winddirectiondegrees']
+            (int) ($data['StationId'] ?? 0),
+            (string) ($data['StationName'] ?? ''),
+            (float) ($data['Latitude'] ?? 0),
+            (float) ($data['Longitude'] ?? 0),
+            isset($data['Region']) ? (string) $data['Region'] : null,
+            (string) ($data['Timestamp'] ?? ''),
+            (string) ($data['WeatherDescription'] ?? ''),
+            (string) ($data['IconUrl'] ?? ''),
+            (string) ($data['FullIconUrl'] ?? ''),
+            (string) ($data['GraphUrl'] ?? ''),
+            isset($data['WindDirection']) ? (string) $data['WindDirection'] : null,
+            $float('AirPressure'),
+            $float('Temperature'),
+            $float('GroundTemperature'),
+            $float('FeelTemperature'),
+            $float('Visibility'),
+            $float('WindGusts'),
+            $float('Windspeed'),
+            isset($data['WindspeedBeaufort']) ? (int) $data['WindspeedBeaufort'] : null,
+            $float('Humidity'),
+            $float('Precipitation'),
+            $float('Sunpower'),
+            $float('RainfallLast24Hour'),
+            $float('RainfallLastHour'),
+            $float('WindDirectionDegrees')
         );
     }
 
@@ -70,7 +70,6 @@ class ActualForecast
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
             'stationid' => $this->stationid,
             'stationname' => $this->stationname,
             'lat' => $this->lat,

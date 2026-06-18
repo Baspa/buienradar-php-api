@@ -37,7 +37,7 @@ class Buienradar
     public function forecast(): self
     {
         $data = $this->fetchData();
-        $this->forecast = $data['Forecast'] ?? [];
+        $this->forecast = $data['forecast'] ?? [];
 
         return $this;
     }
@@ -51,10 +51,10 @@ class Buienradar
     public function actualForecastForStation(MeasuringStation $measuringStation): ?ActualForecast
     {
         $data = $this->fetchData();
-        $measurements = $data['Actual']['WeatherStationMeasurements'] ?? [];
+        $measurements = $data['actual']['stationmeasurements'] ?? [];
 
         foreach ($measurements as $measurement) {
-            if (($measurement['StationName'] ?? null) === $measuringStation->value) {
+            if (($measurement['stationname'] ?? null) === $measuringStation->value) {
                 return ActualForecast::fromArray($measurement);
             }
         }
@@ -65,29 +65,29 @@ class Buienradar
     /** @return array<string, mixed> */
     public function report(): array
     {
-        return $this->forecast['WeatherReport'] ?? [];
+        return $this->forecast['weatherreport'] ?? [];
     }
 
     /** @return array<string, mixed> */
     public function shortTerm(): array
     {
-        return $this->forecast['ShortTermForecast'] ?? [];
+        return $this->forecast['shortterm'] ?? [];
     }
 
     /** @return array<string, mixed> */
     public function longTerm(): array
     {
-        return $this->forecast['LongTerm'] ?? [];
+        return $this->forecast['longterm'] ?? [];
     }
 
     /** @return array<int, Forecast> */
     public function forFiveDays(): array
     {
-        return array_map(fn ($forecast) => Forecast::fromArray($forecast), $this->forecast['FiveDayForecast'] ?? []);
+        return array_map(fn ($forecast) => Forecast::fromArray($forecast), $this->forecast['fivedayforecast'] ?? []);
     }
 
     public function forDay(int $day): Forecast
     {
-        return Forecast::fromArray($this->forecast['FiveDayForecast'][$day] ?? []);
+        return Forecast::fromArray($this->forecast['fivedayforecast'][$day] ?? []);
     }
 }

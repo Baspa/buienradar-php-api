@@ -27,22 +27,22 @@ class Forecast
     public static function fromArray(array $data): self
     {
         return new self(
-            (string) ($data['Day'] ?? ''),
-            (string) ($data['MinTemperature'] ?? ''),
-            (string) ($data['MaxTemperature'] ?? ''),
-            (int) ($data['MinTemperatureMax'] ?? 0),
-            (int) ($data['MinTemperatureMin'] ?? 0),
-            (int) ($data['MaxTemperatureMax'] ?? 0),
-            (int) ($data['MaxTemperatureMin'] ?? 0),
-            (int) ($data['RainChance'] ?? 0),
-            (int) ($data['SunChance'] ?? 0),
-            (string) ($data['WindDirection'] ?? ''),
-            (int) ($data['WindBeaufort'] ?? 0),
-            (float) ($data['RainMinMm'] ?? 0),
-            (float) ($data['RainMaxMm'] ?? 0),
-            (string) ($data['WeatherDescription'] ?? ''),
-            (string) ($data['IconUrl'] ?? ''),
-            (string) ($data['FullIconUrl'] ?? '')
+            (string) ($data['day'] ?? ''),
+            (string) ($data['mintemperature'] ?? ''),
+            (string) ($data['maxtemperature'] ?? ''),
+            (int) ($data['mintemperatureMax'] ?? 0),
+            (int) ($data['mintemperatureMin'] ?? 0),
+            (int) ($data['maxtemperatureMax'] ?? 0),
+            (int) ($data['maxtemperatureMin'] ?? 0),
+            (int) ($data['rainChance'] ?? 0),
+            (int) ($data['sunChance'] ?? 0),
+            (string) ($data['windDirection'] ?? ''),
+            (int) ($data['wind'] ?? 0),
+            (float) ($data['mmRainMin'] ?? 0),
+            (float) ($data['mmRainMax'] ?? 0),
+            (string) ($data['weatherdescription'] ?? ''),
+            (string) ($data['iconurl'] ?? ''),
+            (string) ($data['fullIconUrl'] ?? '')
         );
     }
 

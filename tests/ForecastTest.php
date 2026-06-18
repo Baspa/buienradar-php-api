@@ -55,7 +55,7 @@ it('can get the long term forecast', function () {
 it('can get the weather report', function () {
     $report = $this->buienradar->forecast()->report();
 
-    expect($report)->toHaveKey('Summary');
+    expect($report)->toHaveKey('summary');
 });
 
 it('can get the forecast for a specific day', function () {

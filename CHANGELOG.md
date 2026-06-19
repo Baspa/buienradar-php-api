@@ -2,6 +2,26 @@
 
 All notable changes to `buienradar-php-api` will be documented in this file.
 
+## v2.1.0 - 2026-06-19
+
+### What's new
+
+Adds a second Buienradar feed: the short-term **rain forecast** (raintext).
+
+- New `Buienradar::rainForecast(float $lat, float $lon): array` — returns `array<RainForecast>` with the precipitation forecast for the next ~2 hours (per 5 minutes) at a coordinate.
+- New `RainForecast` value object: `time`, `value` (0–255), `mm` (mm/hour), and `isDry()`.
+
+```php
+$rain = (new Buienradar)->rainForecast(52.1, 5.18);
+foreach ($rain as $moment) {
+    echo $moment->time;    // '14:25'
+    echo $moment->mm;      // mm per hour
+    echo $moment->isDry();
+}
+
+```
+**Full Changelog**: https://github.com/Baspa/buienradar-php-api/compare/v2.0.1...v2.1.0
+
 ## v2.0.0 - 2026-06-15
 
 ### What's Changed

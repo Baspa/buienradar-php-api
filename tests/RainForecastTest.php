@@ -1,6 +1,13 @@
 <?php
 
+use Baspa\Buienradar\Buienradar;
 use Baspa\Buienradar\RainForecast;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
 it('parses a raintext line into time, value and mm', function () {
     $rain = RainForecast::fromLine('077|14:25');
@@ -31,12 +38,6 @@ it('serialises to array and json', function () {
         ->and((string) $rain)->toBe($rain->toJson());
 });
 
-use Baspa\Buienradar\Buienradar;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-
 function fakeRainBuienradar(string $body): Buienradar
 {
     $mock = new MockHandler([new Response(200, [], $body)]);
@@ -59,9 +60,9 @@ it('returns a rain forecast parsed from the raintext feed', function () {
 });
 
 it('returns an empty array when the request fails', function () {
-    $mock = new MockHandler([new \GuzzleHttp\Exception\ConnectException(
+    $mock = new MockHandler([new ConnectException(
         'boom',
-        new \GuzzleHttp\Psr7\Request('GET', 'raintext')
+        new Request('GET', 'raintext')
     )]);
     $client = new Client(['handler' => HandlerStack::create($mock)]);
 

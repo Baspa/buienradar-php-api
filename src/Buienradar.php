@@ -11,6 +11,8 @@ class Buienradar
 {
     private const URL = 'https://data.buienradar.nl/2.0/feed/json';
 
+    private const RAINTEXT_URL = 'https://gpsgadget.buienradar.nl/data/raintext';
+
     private ClientInterface $client;
 
     /** @var array<string, mixed> */
@@ -60,6 +62,27 @@ class Buienradar
         }
 
         return null;
+    }
+
+    /** @return array<int, RainForecast> */
+    public function rainForecast(float $lat, float $lon): array
+    {
+        try {
+            $response = $this->client->request('GET', self::RAINTEXT_URL, [
+                'query' => ['lat' => $lat, 'lon' => $lon],
+            ]);
+
+            $body = $response->getBody()->getContents();
+        } catch (GuzzleException $e) {
+            return [];
+        }
+
+        $lines = preg_split('/\r\n|\r|\n/', trim($body)) ?: [];
+
+        return array_values(array_map(
+            fn (string $line) => RainForecast::fromLine($line),
+            array_filter($lines, fn (string $line) => trim($line) !== ''),
+        ));
     }
 
     /** @return array<string, mixed> */

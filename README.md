@@ -115,6 +115,23 @@ use Baspa\Buienradar\Enum\MeasuringStation;
 $forecast = $buienradar->actualForecastForStation(MeasuringStation::VOLKEL);
 ```
 
+### Rain forecast (short-term precipitation)
+
+Fetch the short-term precipitation forecast (next ~2 hours, per 5 minutes) for a coordinate:
+
+```php
+use Baspa\Buienradar\Buienradar;
+
+$rain = (new Buienradar)->rainForecast(52.1, 5.18);
+
+foreach ($rain as $moment) {
+    echo $moment->time;      // '14:25'
+    echo $moment->value;     // 0–255 (raw Buienradar value)
+    echo $moment->mm;        // mm per hour
+    echo $moment->isDry();   // true when value === 0
+}
+```
+
 ## Testing
 
 ```bash

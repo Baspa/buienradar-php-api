@@ -26,12 +26,24 @@ class Buienradar
     /** @var array<string, mixed> */
     private array $forecast = [];
 
-    public function __construct(?ClientInterface $client = null)
+    /** @var array<string, mixed>|null */
+    private ?array $feed = null;
+
+    private int $feedFetchedAt = 0;
+
+    public function __construct(?ClientInterface $client = null, private int $cacheSeconds = 60)
     {
         $this->client = $client ?? new Client([
             'timeout' => 10,
             'connect_timeout' => 5,
         ]);
+    }
+
+    public function refresh(): self
+    {
+        $this->feed = null;
+
+        return $this;
     }
 
     /** @param array<string, mixed> $options */
@@ -51,9 +63,19 @@ class Buienradar
     /** @return array<string, mixed> */
     private function fetchData(): array
     {
+        if ($this->feed !== null && time() - $this->feedFetchedAt < $this->cacheSeconds) {
+            return $this->feed;
+        }
+
         $data = json_decode($this->requestBody(self::URL) ?? '', true);
 
-        return is_array($data) ? $data : [];
+        if (! is_array($data)) {
+            return [];
+        }
+
+        $this->feedFetchedAt = time();
+
+        return $this->feed = $data;
     }
 
     public function forecast(): self

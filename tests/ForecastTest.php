@@ -72,6 +72,15 @@ it('rejects a day outside 0 to 4', function (int $day) {
     $this->buienradar->forecast()->forDay($day);
 })->with([-1, 5])->throws(InvalidArgumentException::class);
 
+it('returns an empty forecast for a valid day the feed has no data for', function () {
+    $forecast = (new Buienradar(new Client([
+        'handler' => HandlerStack::create(new MockHandler([new Response(200, [], '{}')])),
+    ])))->forecast()->forDay(2);
+
+    expect($forecast->day)->toBe('')
+        ->and($forecast->rainChance)->toBe(0);
+});
+
 it('can get the five day forecast', function () {
     $forecasts = $this->buienradar->forecast()->forFiveDays();
 

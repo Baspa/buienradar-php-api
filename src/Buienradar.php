@@ -13,7 +13,7 @@ class Buienradar
 {
     private const URL = 'https://data.buienradar.nl/2.0/feed/json';
 
-    private const RAINTEXT_URL = 'https://gpsgadget.buienradar.nl/data/raintext';
+    private const RAINTEXT_URL = 'https://gps.buienradar.nl/getrr.php';
 
     private const RAINTEXT_LINE = '/^(?:[01]\d{2}|2[0-4]\d|25[0-5])\|(?:[01]\d|2[0-3]):[0-5]\d$/';
 

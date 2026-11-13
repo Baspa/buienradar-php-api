@@ -68,3 +68,18 @@ it('returns an empty array when the request fails', function () {
 
     expect((new Buienradar($client))->rainForecast(52.1, 5.18))->toBe([]);
 });
+
+it('keeps only lines in the raintext format', function () {
+    $body = "000|14:25\n<html>\n077|14:30\n999|14:35\n12|14:40\n255|14:45\nNot found";
+
+    $rain = fakeRainBuienradar($body)->rainForecast(52.1, 5.18);
+
+    expect(array_map(fn (RainForecast $moment) => $moment->time, $rain))
+        ->toBe(['14:25', '14:30', '14:45']);
+});
+
+it('returns an empty array for a body that is not raintext', function () {
+    $body = '<html><body>Onderhoud</body></html>';
+
+    expect(fakeRainBuienradar($body)->rainForecast(52.1, 5.18))->toBe([]);
+});

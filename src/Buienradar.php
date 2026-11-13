@@ -15,6 +15,8 @@ class Buienradar
 
     private const RAINTEXT_URL = 'https://gpsgadget.buienradar.nl/data/raintext';
 
+    private const RAINTEXT_LINE = '/^(?:[01]\d{2}|2[0-4]\d|25[0-5])\|(?:[01]\d|2[0-3]):[0-5]\d$/';
+
     private const SUN_TIME_FORMAT = 'Y-m-d\TH:i:s';
 
     private const EARTH_RADIUS_KM = 6371;
@@ -26,26 +28,38 @@ class Buienradar
 
     public function __construct(?ClientInterface $client = null)
     {
-        $this->client = $client ?? new Client;
+        $this->client = $client ?? new Client([
+            'timeout' => 10,
+            'connect_timeout' => 5,
+        ]);
+    }
+
+    /** @param array<string, mixed> $options */
+    private function requestBody(string $url, array $options = []): ?string
+    {
+        try {
+            $response = $this->client->request('GET', $url, $options);
+        } catch (GuzzleException) {
+            return null;
+        }
+
+        $status = $response->getStatusCode();
+
+        return $status >= 200 && $status < 300 ? (string) $response->getBody() : null;
     }
 
     /** @return array<string, mixed> */
     private function fetchData(): array
     {
-        try {
-            $response = $this->client->request('GET', self::URL);
+        $data = json_decode($this->requestBody(self::URL) ?? '', true);
 
-            return json_decode($response->getBody()->getContents(), true) ?? [];
-        } catch (GuzzleException $e) {
-            // Handle the exception (log, throw a custom exception, etc.)
-            return [];
-        }
+        return is_array($data) ? $data : [];
     }
 
     public function forecast(): self
     {
-        $data = $this->fetchData();
-        $this->forecast = $data['forecast'] ?? [];
+        $forecast = $this->fetchData()['forecast'] ?? [];
+        $this->forecast = is_array($forecast) ? $forecast : [];
 
         return $this;
     }
@@ -58,10 +72,7 @@ class Buienradar
 
     public function actualForecastForStation(MeasuringStation $measuringStation): ?ActualForecast
     {
-        $data = $this->fetchData();
-        $measurements = $data['actual']['stationmeasurements'] ?? [];
-
-        foreach ($measurements as $measurement) {
+        foreach ($this->stationMeasurements() as $measurement) {
             if (($measurement['stationname'] ?? null) === $measuringStation->value) {
                 return ActualForecast::fromArray($measurement);
             }
@@ -151,21 +162,19 @@ class Buienradar
     /** @return array<int, RainForecast> */
     public function rainForecast(float $lat, float $lon): array
     {
-        try {
-            $response = $this->client->request('GET', self::RAINTEXT_URL, [
-                'query' => ['lat' => $lat, 'lon' => $lon],
-            ]);
+        $body = $this->requestBody(self::RAINTEXT_URL, [
+            'query' => ['lat' => $lat, 'lon' => $lon],
+        ]);
 
-            $body = $response->getBody()->getContents();
-        } catch (GuzzleException $e) {
+        if ($body === null) {
             return [];
         }
 
-        $lines = preg_split('/\r\n|\r|\n/', trim($body)) ?: [];
+        $lines = array_map('trim', preg_split('/\r\n|\r|\n/', $body) ?: []);
 
         return array_values(array_map(
             fn (string $line) => RainForecast::fromLine($line),
-            array_filter($lines, fn (string $line) => trim($line) !== ''),
+            preg_grep(self::RAINTEXT_LINE, $lines) ?: [],
         ));
     }
 

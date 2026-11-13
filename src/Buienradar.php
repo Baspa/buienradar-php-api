@@ -13,6 +13,8 @@ class Buienradar
 
     private const RAINTEXT_URL = 'https://gpsgadget.buienradar.nl/data/raintext';
 
+    private const RAINTEXT_LINE = '/^(?:[01]\d{2}|2[0-4]\d|25[0-5])\|\d{2}:\d{2}$/';
+
     private ClientInterface $client;
 
     /** @var array<string, mixed> */
@@ -20,20 +22,32 @@ class Buienradar
 
     public function __construct(?ClientInterface $client = null)
     {
-        $this->client = $client ?? new Client;
+        $this->client = $client ?? new Client([
+            'timeout' => 10,
+            'connect_timeout' => 5,
+        ]);
+    }
+
+    /** @param array<string, mixed> $options */
+    private function requestBody(string $url, array $options = []): ?string
+    {
+        try {
+            $response = $this->client->request('GET', $url, $options);
+        } catch (GuzzleException) {
+            return null;
+        }
+
+        $status = $response->getStatusCode();
+
+        return $status >= 200 && $status < 300 ? $response->getBody()->getContents() : null;
     }
 
     /** @return array<string, mixed> */
     private function fetchData(): array
     {
-        try {
-            $response = $this->client->request('GET', self::URL);
+        $data = json_decode($this->requestBody(self::URL) ?? '', true);
 
-            return json_decode($response->getBody()->getContents(), true) ?? [];
-        } catch (GuzzleException $e) {
-            // Handle the exception (log, throw a custom exception, etc.)
-            return [];
-        }
+        return is_array($data) ? $data : [];
     }
 
     public function forecast(): self
@@ -67,21 +81,19 @@ class Buienradar
     /** @return array<int, RainForecast> */
     public function rainForecast(float $lat, float $lon): array
     {
-        try {
-            $response = $this->client->request('GET', self::RAINTEXT_URL, [
-                'query' => ['lat' => $lat, 'lon' => $lon],
-            ]);
+        $body = $this->requestBody(self::RAINTEXT_URL, [
+            'query' => ['lat' => $lat, 'lon' => $lon],
+        ]);
 
-            $body = $response->getBody()->getContents();
-        } catch (GuzzleException $e) {
+        if ($body === null) {
             return [];
         }
 
-        $lines = preg_split('/\r\n|\r|\n/', trim($body)) ?: [];
+        $lines = array_map('trim', preg_split('/\r\n|\r|\n/', $body) ?: []);
 
         return array_values(array_map(
             fn (string $line) => RainForecast::fromLine($line),
-            array_filter($lines, fn (string $line) => trim($line) !== ''),
+            preg_grep(self::RAINTEXT_LINE, $lines) ?: [],
         ));
     }
 

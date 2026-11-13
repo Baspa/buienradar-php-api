@@ -132,6 +132,11 @@ foreach ($rain as $moment) {
 }
 ```
 
+## Error handling
+
+Failed requests (network errors, timeouts, non-2xx responses or unexpected response bodies) do not throw: they return an empty result, or `null` for `actualForecastForStation()`.
+The default HTTP client times out after 10 seconds (5 seconds to connect). Pass your own Guzzle client to the constructor to change this: `new Buienradar(new \GuzzleHttp\Client(['timeout' => 3]))`.
+
 ## Testing
 
 ```bash

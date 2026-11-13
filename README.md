@@ -56,7 +56,7 @@ $forecast = $buienradar->forecast()->forFiveDays();
 
 ### Get the forecast for one specific day
 
-If you want to get the forecast for a specific day, you can use the `forDay` method. The parameter is the day you want to get the forecast for, where 0 is today, 1 is tomorrow, and so on. The maximum value is 4.
+If you want to get the forecast for a specific day, you can use the `forDay` method. The parameter is the day you want to get the forecast for, where 0 is today, 1 is tomorrow, and so on. The maximum value is 4. Values outside 0–4 throw an `InvalidArgumentException`.
 
 ```php
 $forecast = $buienradar->forecast()->forDay(1);

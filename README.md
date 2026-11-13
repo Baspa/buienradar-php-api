@@ -66,7 +66,6 @@ $forecast = $buienradar->forecast()->forDay(1);
 
 Choose either one of the following measuring stations:
 
--   Meetstation Arcen
 -   Meetstation Arnhem
 -   Meetstation Berkhout
 -   Meetstation De Bilt
@@ -82,6 +81,7 @@ Choose either one of the following measuring stations:
 -   Meetstation Hoek van Holland
 -   Meetstation Hoogeveen
 -   Meetstation Hoorn Terschelling
+-   Meetstation Horst
 -   Meetstation Houtribdijk
 -   Meetstation IJmuiden
 -   Meetstation Lauwersoog
@@ -106,6 +106,8 @@ Choose either one of the following measuring stations:
 -   Meetstation Wijk aan Zee
 -   Meetstation Woensdrecht
 -   Meetstation Zeeplatform F-3
+
+`MeasuringStation::ARCEN` is deprecated: Buienradar no longer publishes Meetstation Arcen, so it always returns `null`. The misspelled `GILZE_RIJEEN` and `HOULTRIBDIJK` cases are deprecated in favour of `MeasuringStation::GILZE_RIJEN` and `MeasuringStation::HOUTRIBDIJK`.
 
 For example, to get the forecast for the Volkel station, use:
 

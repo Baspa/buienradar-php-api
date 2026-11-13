@@ -5,6 +5,7 @@ use Baspa\Buienradar\Enum\MeasuringStation;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 
 function buienradarWithoutHttpErrors(Response $response): Buienradar
@@ -53,4 +54,33 @@ it('returns no station forecast when the JSON feed responds with a non-2xx statu
     $response = new Response(503, [], (string) file_get_contents(__DIR__.'/Fixtures/buienradar.json'));
 
     expect(buienradarWithoutHttpErrors($response)->actualForecastForStation(MeasuringStation::VOLKEL))->toBeNull();
+});
+
+it('returns an empty forecast when the forecast key is not an object', function () {
+    expect(buienradarWithoutHttpErrors(new Response(200, [], '{"forecast":"x"}'))->forecast()->get())->toBe([]);
+});
+
+it('returns no station forecast when the measurements are malformed', function (string $body) {
+    expect(buienradarWithoutHttpErrors(new Response(200, [], $body))->actualForecastForStation(MeasuringStation::VOLKEL))->toBeNull();
+})->with([
+    'measurements is a string' => '{"actual":{"stationmeasurements":"x"}}',
+    'measurement is a string' => '{"actual":{"stationmeasurements":["x"]}}',
+]);
+
+it('reads the body even when middleware already consumed the stream', function () {
+    $stack = HandlerStack::create(new MockHandler([new Response(200, [], "000|14:25\n077|14:30")]));
+    $stack->push(Middleware::mapResponse(function ($response) {
+        $response->getBody()->getContents();
+
+        return $response;
+    }));
+
+    expect((new Buienradar(new Client(['handler' => $stack])))->rainForecast(52.1, 5.18))->toHaveCount(2);
+});
+
+it('drops raintext lines with an impossible time', function () {
+    $rain = buienradarWithoutHttpErrors(new Response(200, [], "000|14:25\n000|99:99\n000|24:00"))->rainForecast(52.1, 5.18);
+
+    expect($rain)->toHaveCount(1)
+        ->and($rain[0]->time)->toBe('14:25');
 });

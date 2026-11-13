@@ -13,7 +13,7 @@ class Buienradar
 
     private const RAINTEXT_URL = 'https://gpsgadget.buienradar.nl/data/raintext';
 
-    private const RAINTEXT_LINE = '/^(?:[01]\d{2}|2[0-4]\d|25[0-5])\|\d{2}:\d{2}$/';
+    private const RAINTEXT_LINE = '/^(?:[01]\d{2}|2[0-4]\d|25[0-5])\|(?:[01]\d|2[0-3]):[0-5]\d$/';
 
     private ClientInterface $client;
 
@@ -39,7 +39,7 @@ class Buienradar
 
         $status = $response->getStatusCode();
 
-        return $status >= 200 && $status < 300 ? $response->getBody()->getContents() : null;
+        return $status >= 200 && $status < 300 ? (string) $response->getBody() : null;
     }
 
     /** @return array<string, mixed> */
@@ -52,8 +52,8 @@ class Buienradar
 
     public function forecast(): self
     {
-        $data = $this->fetchData();
-        $this->forecast = $data['forecast'] ?? [];
+        $forecast = $this->fetchData()['forecast'] ?? [];
+        $this->forecast = is_array($forecast) ? $forecast : [];
 
         return $this;
     }
@@ -66,11 +66,14 @@ class Buienradar
 
     public function actualForecastForStation(MeasuringStation $measuringStation): ?ActualForecast
     {
-        $data = $this->fetchData();
-        $measurements = $data['actual']['stationmeasurements'] ?? [];
+        $measurements = $this->fetchData()['actual']['stationmeasurements'] ?? [];
+
+        if (! is_array($measurements)) {
+            return null;
+        }
 
         foreach ($measurements as $measurement) {
-            if (($measurement['stationname'] ?? null) === $measuringStation->value) {
+            if (is_array($measurement) && ($measurement['stationname'] ?? null) === $measuringStation->value) {
                 return ActualForecast::fromArray($measurement);
             }
         }

@@ -4,6 +4,7 @@ namespace Baspa\Buienradar\Enum;
 
 enum MeasuringStation: string
 {
+    /** @deprecated Buienradar no longer publishes this station, so it always yields null. */
     case ARCEN = 'Meetstation Arcen';
     case ARNHEM = 'Meetstation Arnhem';
     case BERKHOUT = 'Meetstation Berkhout';
@@ -11,7 +12,7 @@ enum MeasuringStation: string
     case DEN_HELDER = 'Meetstation Den Helder';
     case EINDHOVEN = 'Meetstation Eindhoven';
     case ELL = 'Meetstation Ell';
-    case GILZE_RIJEEN = 'Meetstation Gilze Rijen';
+    case GILZE_RIJEN = 'Meetstation Gilze Rijen';
     case GOES = 'Meetstation Goes';
     case GROENLO_HUPSEL = 'Meetstation Groenlo-Hupsel';
     case GRONINGEN = 'Meetstation Groningen';
@@ -20,7 +21,8 @@ enum MeasuringStation: string
     case HOEK_VAN_HOLLAND = 'Meetstation Hoek van Holland';
     case HOOGEVEEN = 'Meetstation Hoogeveen';
     case HOORN_TERSCHELLING = 'Meetstation Hoorn Terschelling';
-    case HOULTRIBDIJK = 'Meetstation Houtribdijk';
+    case HORST = 'Meetstation Horst';
+    case HOUTRIBDIJK = 'Meetstation Houtribdijk';
     case IJMUIDEN = 'Meetstation IJmuiden';
     case LAUWERSOOG = 'Meetstation Lauwersoog';
     case LEEUWARDEN = 'Meetstation Leeuwarden';
@@ -44,4 +46,10 @@ enum MeasuringStation: string
     case WIJK_AAN_ZEE = 'Meetstation Wijk aan Zee';
     case WOENSDRECHT = 'Meetstation Woensdrecht';
     case ZEEPLATFORM_F3 = 'Meetstation Zeeplatform F-3';
+
+    /** @deprecated Misspelled; use {@see self::GILZE_RIJEN}. */
+    const GILZE_RIJEEN = self::GILZE_RIJEN;
+
+    /** @deprecated Misspelled; use {@see self::HOUTRIBDIJK}. */
+    const HOULTRIBDIJK = self::HOUTRIBDIJK;
 }

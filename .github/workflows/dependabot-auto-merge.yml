@@ -4,14 +4,20 @@ on: pull_request_target
 permissions:
   contents: read
 
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    timeout-minutes: 30
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     permissions:
       pull-requests: write
       contents: write
+      checks: read
+      statuses: read
     steps:
 
       - name: Dependabot metadata
@@ -20,16 +26,36 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Auto-merge Dependabot PRs for semver-minor updates
-        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
-        run: gh pr merge --auto --merge "$PR_URL"
+      - name: Squash-merge minor and patch updates once CI passes
+        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Auto-merge Dependabot PRs for semver-patch updates
-        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUIRED_WORKFLOWS: '["Tests", "PHPStan"]'
+        run: |
+          while true; do
+            if ! checks=$(gh pr view "$PR_URL" --json statusCheckRollup --jq '[.statusCheckRollup[]
+              | select(.workflowName != "dependabot-auto-merge")
+              | {workflow: .workflowName,
+                 name: (.name // .context),
+                 done: ((.status // "COMPLETED") == "COMPLETED" and (.state // "") != "PENDING" and (.state // "") != "EXPECTED"),
+                 result: (.conclusion // .state)}]') || [ -z "$checks" ]; then
+              sleep 30
+              continue
+            fi
+            missing=$(jq --argjson required "$REQUIRED_WORKFLOWS" '$required - [.[].workflow] | length' <<<"$checks")
+            pending=$(jq '[.[] | select(.done | not)] | length' <<<"$checks")
+            if [ "$missing" -gt 0 ] || [ "$pending" -gt 0 ]; then
+              sleep 30
+              continue
+            fi
+            failed=$(jq -r '.[] | select(.result | IN("SUCCESS", "SKIPPED", "NEUTRAL") | not) | "\(.name): \(.result)"' <<<"$checks")
+            if [ -n "$failed" ]; then
+              echo "CI did not pass; leaving the PR open:"
+              echo "$failed"
+              exit 1
+            fi
+            break
+          done
+          gh pr merge --squash --match-head-commit "$HEAD_SHA" "$PR_URL"

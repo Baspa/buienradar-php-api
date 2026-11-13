@@ -117,6 +117,21 @@ use Baspa\Buienradar\Enum\MeasuringStation;
 $forecast = $buienradar->actualForecastForStation(MeasuringStation::VOLKEL);
 ```
 
+### Sun, all stations and nearest station
+
+Sunrise and sunset come back as `DateTimeImmutable` in the `Europe/Amsterdam` timezone, or `null` when the feed has none. `stations()` returns the current measurement of every station; `nearestStation()` returns the one closest to a coordinate, skipping stations without coordinates.
+
+```php
+$sunrise = $buienradar->sunrise();  // DateTimeImmutable, e.g. 2026-11-13 07:55:00 Europe/Amsterdam
+$sunset = $buienradar->sunset();
+
+$stations = $buienradar->stations(); // array<int, ActualForecast>
+
+$station = $buienradar->nearestStation(52.1, 5.18);
+echo $station?->stationname;         // 'Meetstation De Bilt'
+echo $station?->temperature;
+```
+
 ### Rain forecast (short-term precipitation)
 
 Fetch the short-term precipitation forecast (next ~2 hours, per 5 minutes) for a coordinate:
@@ -136,7 +151,7 @@ foreach ($rain as $moment) {
 
 ## Error handling
 
-Failed requests (network errors, timeouts, non-2xx responses or unexpected response bodies) do not throw: they return an empty result, or `null` for `actualForecastForStation()`.
+Failed requests (network errors, timeouts, non-2xx responses or unexpected response bodies) do not throw: they return an empty result, or `null` for `actualForecastForStation()`, `nearestStation()`, `sunrise()` and `sunset()`.
 The default HTTP client times out after 10 seconds (5 seconds to connect). Pass your own Guzzle client to the constructor to change this: `new Buienradar(new \GuzzleHttp\Client(['timeout' => 3]))`.
 
 ## Testing

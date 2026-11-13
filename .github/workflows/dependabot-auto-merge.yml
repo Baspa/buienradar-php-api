@@ -4,11 +4,15 @@ on: pull_request_target
 permissions:
   contents: read
 
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   dependabot:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     permissions:
       pull-requests: write
       contents: write
@@ -28,20 +32,21 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUIRED_WORKFLOWS: '["Tests", "PHPStan"]'
         run: |
-          # Give the PR's own workflows time to register their checks.
-          sleep 60
           while true; do
-            checks=$(gh pr view "$PR_URL" --json statusCheckRollup --jq '[.statusCheckRollup[]
-              | select((.name // .context) != "dependabot")
-              | {name: (.name // .context),
+            if ! checks=$(gh pr view "$PR_URL" --json statusCheckRollup --jq '[.statusCheckRollup[]
+              | select(.workflowName != "dependabot-auto-merge")
+              | {workflow: .workflowName,
+                 name: (.name // .context),
                  done: ((.status // "COMPLETED") == "COMPLETED" and (.state // "") != "PENDING" and (.state // "") != "EXPECTED"),
-                 result: (.conclusion // .state)}]')
-            if [ "$(jq length <<<"$checks")" -eq 0 ]; then
-              echo "No CI checks found on this PR; leaving it for a manual merge."
-              exit 1
+                 result: (.conclusion // .state)}]') || [ -z "$checks" ]; then
+              sleep 30
+              continue
             fi
-            if [ "$(jq '[.[] | select(.done | not)] | length' <<<"$checks")" -gt 0 ]; then
+            missing=$(jq --argjson required "$REQUIRED_WORKFLOWS" '$required - [.[].workflow] | length' <<<"$checks")
+            pending=$(jq '[.[] | select(.done | not)] | length' <<<"$checks")
+            if [ "$missing" -gt 0 ] || [ "$pending" -gt 0 ]; then
               sleep 30
               continue
             fi

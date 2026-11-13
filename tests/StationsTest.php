@@ -109,3 +109,20 @@ it('returns no stations, no nearest station and no sun times for an empty feed',
         ->and($buienradar->sunrise())->toBeNull()
         ->and($buienradar->sunset())->toBeNull();
 });
+
+it('returns no stations, no nearest station and no sun times when the feed fails or is malformed', function (Response $response) {
+    $buienradar = new Buienradar(new Client([
+        'handler' => HandlerStack::create(new MockHandler(array_map(fn () => clone $response, range(1, 4)))),
+        'http_errors' => false,
+    ]));
+
+    expect($buienradar->stations())->toBe([])
+        ->and($buienradar->nearestStation(52.1, 5.18))->toBeNull()
+        ->and($buienradar->sunrise())->toBeNull()
+        ->and($buienradar->sunset())->toBeNull();
+})->with([
+    'non-2xx' => fn () => new Response(503, [], (string) file_get_contents(__DIR__.'/Fixtures/buienradar.json')),
+    'actual is a string' => fn () => new Response(200, [], '{"actual":"x"}'),
+    'measurements is a string' => fn () => new Response(200, [], '{"actual":{"stationmeasurements":"x"}}'),
+    'measurement is a string' => fn () => new Response(200, [], '{"actual":{"stationmeasurements":["x"]}}'),
+]);

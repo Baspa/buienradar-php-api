@@ -58,11 +58,27 @@ it('can get the weather report', function () {
     expect($report)->toHaveKey('summary');
 });
 
-it('can get the forecast for a specific day', function () {
-    $forecast = $this->buienradar->forecast()->forDay(0);
+it('can get the forecast for a specific day', function (int $day, string $date) {
+    $forecast = $this->buienradar->forecast()->forDay($day);
 
     expect($forecast)->toBeInstanceOf(Forecast::class)
-        ->and($forecast->toArray())->toHaveKey('day');
+        ->and($forecast->day)->toBe($date);
+})->with([
+    'today' => [0, '2026-06-15T00:00:00'],
+    'last day' => [4, '2026-06-19T00:00:00'],
+]);
+
+it('rejects a day outside 0 to 4', function (int $day) {
+    $this->buienradar->forecast()->forDay($day);
+})->with([-1, 5])->throws(InvalidArgumentException::class);
+
+it('returns an empty forecast for a valid day the feed has no data for', function () {
+    $forecast = (new Buienradar(new Client([
+        'handler' => HandlerStack::create(new MockHandler([new Response(200, [], '{}')])),
+    ])))->forecast()->forDay(2);
+
+    expect($forecast->day)->toBe('')
+        ->and($forecast->rainChance)->toBe(0);
 });
 
 it('can get the five day forecast', function () {

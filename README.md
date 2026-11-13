@@ -18,6 +18,14 @@ You can install the package via composer:
 composer require baspa/buienradar-php-api
 ```
 
+## Terms of use
+
+This package is not affiliated with Buienradar. The weather data comes from Buienradar, which [makes it available for free](https://www.buienradar.nl/overbuienradar/gratis-weerdata) on these terms:
+
+- Use is only allowed for non-commercial purposes.
+- Attribution to Buienradar is required. For the JSON feed that means crediting Buienradar.nl with a link to https://www.buienradar.nl.
+- Use in mobile apps or for commercial purposes requires permission from Buienradar.
+
 ## Usage
 
 ### Initialization
@@ -144,7 +152,13 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md) for details.
+Issues and pull requests are welcome. Before you open a pull request, run the tests, static analysis and code style fixer:
+
+```bash
+composer test
+vendor/bin/phpstan analyse
+vendor/bin/pint
+```
 
 ## Security Vulnerabilities
 

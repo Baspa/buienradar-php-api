@@ -1,9 +1,14 @@
 {
     "name": "baspa/buienradar-php-api",
-    "description": "PHP package to provide fluent syntax for the Buienradar API",
+    "description": "PHP package to provide a fluent syntax for the Buienradar API.",
     "keywords": [
-        "Baspa",
-        "buienradar-php-api"
+        "buienradar",
+        "weather",
+        "weer",
+        "rain",
+        "forecast",
+        "api",
+        "php"
     ],
     "homepage": "https://github.com/baspa/buienradar-php-api",
     "license": "MIT",

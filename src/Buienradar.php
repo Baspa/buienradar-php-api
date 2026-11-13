@@ -31,14 +31,20 @@ class Buienradar
 
     private int $feedFetchedAt = 0;
 
+    /** @throws \InvalidArgumentException when $cacheSeconds is negative */
     public function __construct(?ClientInterface $client = null, private int $cacheSeconds = 60)
     {
+        if ($cacheSeconds < 0) {
+            throw new \InvalidArgumentException(sprintf('Cache time must be 0 or more seconds, got %d.', $cacheSeconds));
+        }
+
         $this->client = $client ?? new Client([
             'timeout' => 10,
             'connect_timeout' => 5,
         ]);
     }
 
+    /** Makes the next call download the feed again; call forecast() afterwards to reload the forecast data. */
     public function refresh(): self
     {
         $this->feed = null;
@@ -63,7 +69,7 @@ class Buienradar
     /** @return array<string, mixed> */
     private function fetchData(): array
     {
-        if ($this->feed !== null && time() - $this->feedFetchedAt < $this->cacheSeconds) {
+        if ($this->feed !== null && hrtime(true) - $this->feedFetchedAt < $this->cacheSeconds * 1_000_000_000) {
             return $this->feed;
         }
 
@@ -73,7 +79,7 @@ class Buienradar
             return [];
         }
 
-        $this->feedFetchedAt = time();
+        $this->feedFetchedAt = hrtime(true);
 
         return $this->feed = $data;
     }

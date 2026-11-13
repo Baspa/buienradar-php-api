@@ -23,14 +23,27 @@ it('downloads the feed once for several calls on the same instance', function ()
     $mock = new MockHandler([feedResponse(), feedResponse()]);
     $buienradar = cachingBuienradar($mock);
 
-    $buienradar->forecast()->report();
-    $buienradar->forecast()->shortTerm();
-    $buienradar->actualForecastForStation(MeasuringStation::VOLKEL);
-    $buienradar->stations();
-    $buienradar->sunrise();
-
-    expect($mock->count())->toBe(1);
+    expect($buienradar->forecast()->report())->toHaveKey('summary')
+        ->and($buienradar->forecast()->shortTerm())->toHaveKey('Forecast')
+        ->and($buienradar->actualForecastForStation(MeasuringStation::VOLKEL)?->stationname)->toBe('Meetstation Volkel')
+        ->and($buienradar->stations())->toHaveCount(3)
+        ->and($mock->count())->toBe(1);
 });
+
+it('downloads the feed again once the cache time has passed', function () {
+    $mock = new MockHandler([feedResponse(), feedResponse()]);
+    $buienradar = cachingBuienradar($mock, 60);
+
+    $buienradar->forecast();
+    (new ReflectionProperty(Buienradar::class, 'feedFetchedAt'))->setValue($buienradar, hrtime(true) - 61 * 1_000_000_000);
+    $buienradar->forecast();
+
+    expect($mock->count())->toBe(0);
+});
+
+it('rejects a negative cache time', function () {
+    new Buienradar(cacheSeconds: -1);
+})->throws(InvalidArgumentException::class);
 
 it('downloads the feed again after refresh()', function () {
     $mock = new MockHandler([feedResponse(), feedResponse()]);

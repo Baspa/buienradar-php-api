@@ -32,7 +32,7 @@ $buienradar = new Buienradar();
 
 ### Caching
 
-The JSON feed is downloaded once and reused by the same instance for 60 seconds, so calling `forecast()`, `actualForecastForStation()`, `stations()` or `sunrise()` one after another makes a single request. Call `refresh()` to force a new download, or pass the cache time in seconds as the second constructor argument (`0` turns it off):
+The JSON feed is downloaded once and reused by the same instance for 60 seconds, so calling `forecast()`, `actualForecastForStation()`, `stations()`, `nearestStation()`, `sunrise()` or `sunset()` one after another makes a single request. A failed download is not reused (the next call tries again), and `rainForecast()` is never cached. Call `refresh()` to make the next call download the feed again, or pass the cache time in seconds as the second constructor argument (`0` turns it off):
 
 ```php
 $buienradar = new Buienradar(cacheSeconds: 300);

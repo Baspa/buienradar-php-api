@@ -8,9 +8,12 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
-it('aliases the misspelled cases with correctly spelled constants', function () {
-    expect(MeasuringStation::GILZE_RIJEN)->toBe(MeasuringStation::GILZE_RIJEEN)
-        ->and(MeasuringStation::HOUTRIBDIJK)->toBe(MeasuringStation::HOULTRIBDIJK);
+it('keeps the old misspelled names working as aliases of the correctly spelled cases', function () {
+    expect(MeasuringStation::GILZE_RIJEEN)->toBe(MeasuringStation::GILZE_RIJEN)
+        ->and(MeasuringStation::GILZE_RIJEEN->name)->toBe('GILZE_RIJEN')
+        ->and(MeasuringStation::HOULTRIBDIJK)->toBe(MeasuringStation::HOUTRIBDIJK)
+        ->and(MeasuringStation::HOULTRIBDIJK->name)->toBe('HOUTRIBDIJK')
+        ->and(MeasuringStation::from('Meetstation Gilze Rijen'))->toBe(MeasuringStation::GILZE_RIJEN);
 });
 
 it('has a case for Meetstation Horst', function () {

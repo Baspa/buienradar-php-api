@@ -12,8 +12,7 @@ enum MeasuringStation: string
     case DEN_HELDER = 'Meetstation Den Helder';
     case EINDHOVEN = 'Meetstation Eindhoven';
     case ELL = 'Meetstation Ell';
-    /** @deprecated Use {@see self::GILZE_RIJEN}. */
-    case GILZE_RIJEEN = 'Meetstation Gilze Rijen';
+    case GILZE_RIJEN = 'Meetstation Gilze Rijen';
     case GOES = 'Meetstation Goes';
     case GROENLO_HUPSEL = 'Meetstation Groenlo-Hupsel';
     case GRONINGEN = 'Meetstation Groningen';
@@ -23,8 +22,7 @@ enum MeasuringStation: string
     case HOOGEVEEN = 'Meetstation Hoogeveen';
     case HOORN_TERSCHELLING = 'Meetstation Hoorn Terschelling';
     case HORST = 'Meetstation Horst';
-    /** @deprecated Use {@see self::HOUTRIBDIJK}. */
-    case HOULTRIBDIJK = 'Meetstation Houtribdijk';
+    case HOUTRIBDIJK = 'Meetstation Houtribdijk';
     case IJMUIDEN = 'Meetstation IJmuiden';
     case LAUWERSOOG = 'Meetstation Lauwersoog';
     case LEEUWARDEN = 'Meetstation Leeuwarden';
@@ -49,7 +47,9 @@ enum MeasuringStation: string
     case WOENSDRECHT = 'Meetstation Woensdrecht';
     case ZEEPLATFORM_F3 = 'Meetstation Zeeplatform F-3';
 
-    const GILZE_RIJEN = self::GILZE_RIJEEN;
+    /** @deprecated Misspelled; use {@see self::GILZE_RIJEN}. */
+    const GILZE_RIJEEN = self::GILZE_RIJEN;
 
-    const HOUTRIBDIJK = self::HOULTRIBDIJK;
+    /** @deprecated Misspelled; use {@see self::HOUTRIBDIJK}. */
+    const HOULTRIBDIJK = self::HOUTRIBDIJK;
 }

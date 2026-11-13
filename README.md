@@ -107,7 +107,7 @@ Choose either one of the following measuring stations:
 -   Meetstation Woensdrecht
 -   Meetstation Zeeplatform F-3
 
-`MeasuringStation::ARCEN` is deprecated: Buienradar no longer publishes Meetstation Arcen, so it always returns `null`. The misspelled `GILZE_RIJEEN` and `HOULTRIBDIJK` cases are deprecated in favour of `MeasuringStation::GILZE_RIJEN` and `MeasuringStation::HOUTRIBDIJK`.
+`MeasuringStation::ARCEN` is deprecated: Buienradar no longer publishes Meetstation Arcen, so it always returns `null`. The cases for Gilze Rijen and Houtribdijk are now `MeasuringStation::GILZE_RIJEN` and `MeasuringStation::HOUTRIBDIJK`; the old misspelled names `GILZE_RIJEEN` and `HOULTRIBDIJK` still work as deprecated aliases.
 
 For example, to get the forecast for the Volkel station, use:
 

@@ -26,12 +26,30 @@ class Buienradar
     /** @var array<string, mixed> */
     private array $forecast = [];
 
-    public function __construct(?ClientInterface $client = null)
+    /** @var array<string, mixed>|null */
+    private ?array $feed = null;
+
+    private int $feedFetchedAt = 0;
+
+    /** @throws \InvalidArgumentException when $cacheSeconds is negative */
+    public function __construct(?ClientInterface $client = null, private int $cacheSeconds = 60)
     {
+        if ($cacheSeconds < 0) {
+            throw new \InvalidArgumentException(sprintf('Cache time must be 0 or more seconds, got %d.', $cacheSeconds));
+        }
+
         $this->client = $client ?? new Client([
             'timeout' => 10,
             'connect_timeout' => 5,
         ]);
+    }
+
+    /** Makes the next call download the feed again; call forecast() afterwards to reload the forecast data. */
+    public function refresh(): self
+    {
+        $this->feed = null;
+
+        return $this;
     }
 
     /** @param array<string, mixed> $options */
@@ -51,9 +69,19 @@ class Buienradar
     /** @return array<string, mixed> */
     private function fetchData(): array
     {
+        if ($this->feed !== null && hrtime(true) - $this->feedFetchedAt < $this->cacheSeconds * 1_000_000_000) {
+            return $this->feed;
+        }
+
         $data = json_decode($this->requestBody(self::URL) ?? '', true);
 
-        return is_array($data) ? $data : [];
+        if (! is_array($data)) {
+            return [];
+        }
+
+        $this->feedFetchedAt = hrtime(true);
+
+        return $this->feed = $data;
     }
 
     public function forecast(): self

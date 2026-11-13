@@ -109,8 +109,13 @@ class Buienradar
         return array_map(fn ($forecast) => Forecast::fromArray($forecast), $this->forecast['fivedayforecast'] ?? []);
     }
 
+    /** @throws \InvalidArgumentException when $day is not between 0 and 4 */
     public function forDay(int $day): Forecast
     {
+        if ($day < 0 || $day > 4) {
+            throw new \InvalidArgumentException(sprintf('Day must be between 0 (today) and 4, got %d.', $day));
+        }
+
         return Forecast::fromArray($this->forecast['fivedayforecast'][$day] ?? []);
     }
 }

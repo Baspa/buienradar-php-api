@@ -7,11 +7,13 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
     if: ${{ github.actor == 'dependabot[bot]' }}
     permissions:
       pull-requests: write
       contents: write
+      checks: read
+      statuses: read
     steps:
 
       - name: Dependabot metadata
@@ -20,16 +22,35 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Auto-merge Dependabot PRs for semver-minor updates
-        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
-        run: gh pr merge --auto --squash "$PR_URL"
+      - name: Squash-merge minor and patch updates once CI passes
+        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Auto-merge Dependabot PRs for semver-patch updates
-        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Give the PR's own workflows time to register their checks.
+          sleep 60
+          while true; do
+            checks=$(gh pr view "$PR_URL" --json statusCheckRollup --jq '[.statusCheckRollup[]
+              | select((.name // .context) != "dependabot")
+              | {name: (.name // .context),
+                 done: ((.status // "COMPLETED") == "COMPLETED" and (.state // "") != "PENDING" and (.state // "") != "EXPECTED"),
+                 result: (.conclusion // .state)}]')
+            if [ "$(jq length <<<"$checks")" -eq 0 ]; then
+              echo "No CI checks found on this PR; leaving it for a manual merge."
+              exit 1
+            fi
+            if [ "$(jq '[.[] | select(.done | not)] | length' <<<"$checks")" -gt 0 ]; then
+              sleep 30
+              continue
+            fi
+            failed=$(jq -r '.[] | select(.result | IN("SUCCESS", "SKIPPED", "NEUTRAL") | not) | "\(.name): \(.result)"' <<<"$checks")
+            if [ -n "$failed" ]; then
+              echo "CI did not pass; leaving the PR open:"
+              echo "$failed"
+              exit 1
+            fi
+            break
+          done
+          gh pr merge --squash --match-head-commit "$HEAD_SHA" "$PR_URL"

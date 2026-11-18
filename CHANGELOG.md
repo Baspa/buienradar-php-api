@@ -2,6 +2,16 @@
 
 All notable changes to `buienradar-php-api` will be documented in this file.
 
+## v2.3.0 - 2026-11-18
+
+### What's new
+
+- **PHP 8.6** (#54): the tests and PHPStan now also run on PHP 8.6, on Ubuntu and Windows with lowest and stable dependencies. Verified against PHP 8.6.0RC7 and the 8.6 nightly; no code changes were needed.
+
+### Development
+
+- PHPStan 2.3.6 or newer is required.
+
 ## v2.2.0 - 2026-11-13
 
 ### What's new
@@ -16,6 +26,7 @@ $buienradar = new Buienradar();
 $buienradar->sunrise();                     // 2026-11-13 07:55:00 Europe/Amsterdam
 $buienradar->nearestStation(52.1, 5.18);    // Meetstation De Bilt
 $buienradar->refresh()->forecast();         // download the feed again
+
 
 ```
 ### Fixes
@@ -56,6 +67,7 @@ foreach ($rain as $moment) {
     echo $moment->mm;      // mm per hour
     echo $moment->isDry();
 }
+
 
 
 ```
